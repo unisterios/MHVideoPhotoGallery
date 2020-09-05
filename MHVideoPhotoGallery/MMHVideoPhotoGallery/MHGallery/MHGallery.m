@@ -65,8 +65,14 @@ UIView *MHStatusBar(void){
     NSString *key = [NSString.alloc initWithData:[NSData dataWithBytes:(unsigned char []){0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x42, 0x61, 0x72} length:9] encoding:NSASCIIStringEncoding];
     id object = UIApplication.sharedApplication;
     UIView *statusBar;
-    if ([object respondsToSelector:NSSelectorFromString(key)]) {
-        statusBar = [object valueForKey:key];
+    if (@available(iOS 13.0, *)) {
+        UIApplication *app = UIApplication.sharedApplication;
+        CGFloat statusBarHeight = app.statusBarFrame.size.height;
+        statusBar = [[UIView alloc] initWithFrame:CGRectMake(0, 0, UIScreen.mainScreen.bounds.size.width, statusBarHeight)];
+    } else {
+        if ([object respondsToSelector:NSSelectorFromString(key)]) {
+            statusBar = [object valueForKey:key];
+        }
     }
     return statusBar;
 }
